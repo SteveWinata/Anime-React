@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AnimeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/animes', [AnimeController::class, 'index']);
+Route::post('/animes', [AnimeController::class, 'store']);
+
+Route::delete('/anime/{id}', [AnimeController::class, 'destroy']);
+
+Route::put('/anime/{slug}/edit', [AnimeController::class, 'update']);
+
+Route::get('/anime/{slug}', [AnimeController::class, 'show']);
+Route::post('/anime/checkSlug', [AnimeController::class, 'createSlug']);

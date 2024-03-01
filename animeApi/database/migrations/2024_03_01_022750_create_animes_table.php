@@ -16,10 +16,9 @@ return new class extends Migration
         Schema::create('animes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->string('producer');
-            $table->text('gambar');
-            $table->text('description');
+            $table->text('synopsis');
             $table->timestamps();
         });
     }
