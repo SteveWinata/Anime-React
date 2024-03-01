@@ -122,6 +122,9 @@ class AnimeController extends Controller
         }
 
         $slug = uniqid();
+        while (Anime::where('slug', $slug)->exists()) {
+            $slug = uniqid();
+        }
 
         return response([
             'slug' => $slug
