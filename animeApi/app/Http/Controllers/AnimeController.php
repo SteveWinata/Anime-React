@@ -2,106 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AnimeUpdateRequest;
 use App\Models\Anime;
 use Illuminate\Http\Request;
+use App\Http\Resources\AnimeResource;
+use App\Http\Requests\StoreAnimeRequest;
+use App\Http\Requests\UpdateAnimeRequest;
 use Illuminate\Support\Facades\Validator;
 
 class AnimeController extends Controller
 {
     public function index()
     {
-        $animes = Anime::all();
+        // $animes = Anime::all();
+        $animes = Anime::get();
 
         if ($animes->isEmpty()) {
             return response([
-                "message" => "Animes can't be found"
+                'message' => "Animes can't be found"
             ]);
         }
 
-        return response([
-            "message" => "Successfully retrieved animes data",
-            "animes" => $animes
-        ]);
+        return AnimeResource::collection($animes)
+            ->additional([
+                'message' => 'Successfully retrieved animes data'
+            ])
+            ->response()
+            ->setStatusCode(200);
+
+        // return response([
+        //     'message' => "Successfully retrieved animes data",
+        //     "animes" => $animes
+        // ]);
     }
     public function show($slug)
     {
-        $anime = Anime::where('slug', $slug)->first();
+        $anime = Anime::whereSlug($slug)->first();
 
         if (!$anime) {
             return response([
                 "message" => "Anime can't be found"
-            ], 422);
+            ], 404);
         }
 
-        return response([
-            "message" => "Successfully retrieved an anime data",
-            "anime" => $anime
-        ]);
+        return (new AnimeResource($anime))
+            ->additional([
+                'message' => 'Successfully retrieved anime data'
+            ])
+            ->response()
+            ->setStatusCode(200);
     }
-    public function store(Request $request)
+    public function store(StoreAnimeRequest $request)
     {
-        $vd = Validator::make($request->all(), [
-            "title" => "required|min:5",
-            "slug" => "required|unique:animes,slug",
-            "producer" => "required",
-            "synopsis" => "required|min:10"
+        // $vd = $request->validated();
+        $anime = Anime::create([
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'synopsis' => $request->synopsis,
+            'producer' => $request->producer
         ]);
 
-        if ($vd->fails()) {
-            return response([
-                "message" => "Animes can't be stored",
-                "error" => $vd->errors()
-            ], 422);
-        }
 
-        $data = $vd->validated();
-
-        Anime::create($data);
-
-
-        return response([
-            "message" => "Successfully inserted animes data",
-            "data" => $data
-        ]);
+        return (new AnimeResource($anime))
+            ->additional([
+                'message' => 'Successfully created anime data'
+            ]);
+        // ->response();
+        // ->setStatusCode(200);
     }
-    public function update(Request $request, $slug)
+
+    public function update(AnimeUpdateRequest $request, Anime $anime)
     {
-        $anime = Anime::where('slug', $slug)->first();
+        // if($request->slug === $slug){
 
-        $rules = [
-            "title" => "required|min:5",
-            "producer" => "required",
-            "synopsis" => "required|min:10"
-        ];
-
-        $rules['slug'] = "required|unique:animes,slug";
-        // if($request->get('slug') !== $anime->slug){
         // }
-
-        $vd = Validator::make($request->all(), $rules);
-
-
-        if ($vd->fails()) {
-            return response([
-                "message" => "Animes can't be stored",
-                "error" => $vd->errors()
-            ], 422);
-        }
-
-        $data = $vd->validated();
-
-        $anime->update($data);
-
-
-        return response([
-            "message" => "Successfully inserted animes data",
-            "data" => $data
+        $anime->update([
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'synopsis' => $request->synopsis,
+            'producer' => $request->producer
         ]);
+
+        return (new AnimeResource($anime))
+            ->additional([
+                'message' => 'Successfully updated anime data'
+            ]);
     }
 
-    public function destroy($id)
+    public function destroy(Anime $anime)
     {
-        Anime::destroy($id);
+        $anime->delete();
+
+        return response(["message" => "Successfully deleted anime data"]);
     }
 
     public function createSlug(Request $request)

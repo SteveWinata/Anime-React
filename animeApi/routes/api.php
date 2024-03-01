@@ -14,13 +14,15 @@ use App\Http\Controllers\AnimeController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::prefix('animes')->group(function(){
+    Route::get('/', [AnimeController::class, 'index']);
+    Route::post('/', [AnimeController::class, 'store']);
+    
+    Route::delete('/{anime}', [AnimeController::class, 'destroy']);
+    
+    Route::put('/{anime:id}/edit', [AnimeController::class, 'update']);
+    
+    Route::get('/{slug}', [AnimeController::class, 'show']);
+    Route::post('/checkSlug', [AnimeController::class, 'createSlug']);
+});
 
-Route::get('/animes', [AnimeController::class, 'index']);
-Route::post('/animes', [AnimeController::class, 'store']);
-
-Route::delete('/anime/{id}', [AnimeController::class, 'destroy']);
-
-Route::put('/anime/{slug}/edit', [AnimeController::class, 'update']);
-
-Route::get('/anime/{slug}', [AnimeController::class, 'show']);
-Route::post('/anime/checkSlug', [AnimeController::class, 'createSlug']);

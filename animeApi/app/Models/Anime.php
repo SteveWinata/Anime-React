@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Anime extends Model
 {
     use HasFactory;
+    protected $table = 'animes';
 
-    protected $guarded = ['id'];
+    // protected $guarded = ['id'];
+
+    protected $fillable = [
+        'title',
+        'slug',
+        'producer',
+        'synopsis'
+    ];
 }

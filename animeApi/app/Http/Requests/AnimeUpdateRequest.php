@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAnimeRequest extends FormRequest
+class AnimeUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,6 @@ class StoreAnimeRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,9 +24,9 @@ class StoreAnimeRequest extends FormRequest
     {
         return [
             "title" => ['required'],
-            "slug" => ['required','unique:animes,slug'],
+            "slug" => ['required', 'unique:animes,slug,' . $this->anime->id],
             "producer" => ['required'],
-            "synopsis" => ['required','min:10']
+            "synopsis" => ['required', 'min:10']
         ];
     }
 }
