@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import useFetch from "../logic/useFetch";
 
 const Home = () => {
@@ -13,7 +14,7 @@ const Home = () => {
                         <div className="card-body">
                             <h5 className="card-title">{anime.title}</h5>
                             <p className="card-text">{ anime.synopsis.substr(0, 50) + '...' }</p>
-                            <a href={ '/anime/' + anime.slug } className="btn btn-primary">See details</a>
+                            <Link to={ '/anime/' + anime.slug } className="btn btn-primary">See details</Link>
                         </div>
                         </div>
                     </div>

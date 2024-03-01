@@ -34,6 +34,7 @@ const Create = () => {
                     setSlug(words);
                     return;
                 }
+                words = words.toLowerCase();
                 words = words.replaceAll(' ', '-');
                 const res = await axios.post('http://127.0.0.1:8000/api/anime/checkSlug', {slug:words});
                 setSlug(res.data.slug)

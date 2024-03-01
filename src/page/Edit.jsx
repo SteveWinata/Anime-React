@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useFetch from "../logic/useFetch";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Edit = () => {
     const { slug:identifier } = useParams(); 
@@ -11,6 +11,7 @@ const Edit = () => {
     const [slug, setSlug] = useState('');
     const [timeOutId, setTimeOutId] = useState(null);
     const [synopsis, setSynopsis] = useState('');
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         try{
             e.preventDefault();
@@ -21,6 +22,7 @@ const Edit = () => {
                 synopsis
             }
             const res = await axios.put('http://127.0.0.1:8000/api/anime/' + identifier + '/edit', data);
+            navigate('/');
             console.log(res);
         }catch(e){
             console.log(e);
@@ -36,6 +38,7 @@ const Edit = () => {
                     setSlug(words);
                     return;
                 }
+                words = words.toLowerCase();
                 words = words.replaceAll(' ', '-');
                 const res = await axios.post('http://127.0.0.1:8000/api/anime/checkSlug', {slug:words});
                 setSlug(res.data.slug)

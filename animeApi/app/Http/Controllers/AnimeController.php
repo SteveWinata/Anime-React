@@ -74,9 +74,9 @@ class AnimeController extends Controller
             "synopsis" => "required|min:10"
         ];
 
-        if($request->get('slug') !== $anime->slug){
             $rules['slug'] = "required|unique:animes,slug";
-        }
+        // if($request->get('slug') !== $anime->slug){
+        // }
 
         $vd = Validator::make($request->all(), $rules);
 
