@@ -5,6 +5,7 @@ import Home from './page/Home'
 import Create from './page/Create'
 import Detail from './page/Detail'
 import Edit from './page/Edit'
+import NotFound from './page/NotFound'
 function App() {
 
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route exact path='/create' element={<Create />} />
           <Route exact path='/anime/:slug' element={<Detail />} />
           <Route exact path='/anime/:slug/edit' element={<Edit />} />
+          <Route exact path='/*' element={<NotFound />} />
         </Routes>
       </div>
     </div>

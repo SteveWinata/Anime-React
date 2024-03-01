@@ -30,7 +30,7 @@ class AnimeController extends Controller
         if (!$anime) {
             return response([
                 "message" => "Anime can't be found"
-            ]);
+            ], 422);
         }
 
         return response([
@@ -51,7 +51,7 @@ class AnimeController extends Controller
             return response([
                 "message" => "Animes can't be stored",
                 "error" => $vd->errors()
-            ]);
+            ], 422);
         }
 
         $data = $vd->validated();
@@ -65,7 +65,7 @@ class AnimeController extends Controller
         ]);
     }
     public function update(Request $request, $slug)
-    {   
+    {
         $anime = Anime::where('slug', $slug)->first();
 
         $rules = [
@@ -74,7 +74,7 @@ class AnimeController extends Controller
             "synopsis" => "required|min:10"
         ];
 
-            $rules['slug'] = "required|unique:animes,slug";
+        $rules['slug'] = "required|unique:animes,slug";
         // if($request->get('slug') !== $anime->slug){
         // }
 
@@ -85,7 +85,7 @@ class AnimeController extends Controller
             return response([
                 "message" => "Animes can't be stored",
                 "error" => $vd->errors()
-            ]);
+            ], 422);
         }
 
         $data = $vd->validated();
@@ -98,23 +98,24 @@ class AnimeController extends Controller
             "data" => $data
         ]);
     }
-    
-    public function destroy($id){
+
+    public function destroy($id)
+    {
         Anime::destroy($id);
     }
-    
+
     public function createSlug(Request $request)
     {
         $slug = $request->get('slug');
 
-        if(!$slug){
+        if (!$slug) {
             return response([
                 "message" => "There's no slug data",
                 "slug" => $slug
             ]);
         }
 
-        if(!Anime::where('slug', $slug)->exists()){
+        if (!Anime::where('slug', $slug)->exists()) {
             return response([
                 "slug" => $slug
             ]);

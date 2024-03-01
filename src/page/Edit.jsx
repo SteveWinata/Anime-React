@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Edit = () => {
     const { slug:identifier } = useParams(); 
-    const {data, isPending, error} = useFetch('http://127.0.0.1:8000/api/anime/' + identifier);
+    const {data, isPending} = useFetch('http://127.0.0.1:8000/api/anime/' + identifier);
+    const [error, setError] = useState([]);
     const [title, setTitle] = useState('');
     const [producer, setProducer] = useState('');
     const [slug, setSlug] = useState('');
@@ -25,10 +26,14 @@ const Edit = () => {
             navigate('/');
             console.log(res);
         }catch(e){
+            setError(e.response.data.error);
             console.log(e);
         }
     }
-    const handleSlug = (words) =>{
+    const handleSlug = (words, e = '') =>{
+        if(e){
+            e.preventDefault();
+        }
         if(timeOutId){
             clearTimeout(timeOutId);
         }
@@ -67,18 +72,39 @@ const Edit = () => {
                         <div className="mb-3">
                             <label htmlFor="title" className="form-label">Title</label>
                             <input type="text" className="form-control" required value={title} onChange={(e) => {setTitle(e.target.value); handleSlug(e.target.value)}} id="title" placeholder="Insert the title here" />
+                            {error['title'] &&
+                            <p className="text-base text-danger">
+                                {error.title}
+                            </p>
+                            }
                         </div>
                         <div className="mb-3">
                             <label htmlFor="producer" className="form-label">Producer</label>
                             <input type="text" className="form-control" value={producer} onChange={(e) => setProducer(e.target.value)} required id="producer" placeholder="Insert the producer here" />
+                            {error['producer'] &&
+                            <p className="text-base text-danger">
+                                {error.producer}
+                            </p>
+                            }
                         </div>
                         <div className="mb-3">
                             <label htmlFor="slug" className="form-label">Slug</label>
                             <input type="text" readOnly className="form-control" value={slug} required id="slug" />
+                            <button onClick={(e) => handleSlug(title, e)} className="btn btn-warning mt-2">Refresh</button>
+                            {error['slug'] &&
+                            <p className="text-base text-danger">
+                                {error.slug}
+                            </p>
+                            }
                         </div>
                         <div className="mb-3">
                             <label htmlFor="synopsis" className="form-label">Synopsis</label>
                             <textarea className="form-control" value={synopsis} onChange={(e) => setSynopsis(e.target.value)} required id="synopsis"></textarea>
+                            {error['synopsis'] &&
+                            <p className="text-base text-danger">
+                                {error.synopsis}
+                            </p>
+                            }
                         </div>
                         <button className="btn btn-primary">Submit data</button>
                     </form>
